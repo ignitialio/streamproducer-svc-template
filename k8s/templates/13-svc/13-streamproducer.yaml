@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamproducer
+  labels:
+    app: streamproducer
+spec:
+  replicas: "{{$.iios.app.replicas}}"
+  selector:
+    matchLabels:
+      app: streamproducer
+  template:
+    metadata:
+      labels:
+        app: streamproducer
+    spec:
+      containers:
+      - name: streamproducer
+        image: "ignitial/streamproducer:{{$.iios.app.version}}"
+        imagePullPolicy: "{{$.iios.app.imagePullPolicy}}"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/streamproducer/server/config/generated
+        ports: "{{$.iios.app.ports}}"
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: config-volume
+          configMap:
+            name: streamproducer-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamproducer
+spec:
+  selector:
+    app: streamproducer
+  ports:
+  - name: http
+    port: "{{$.iios.app.ports[0].containerPort}}"
+    targetPort: "{{$.iios.app.ports[0].containerPort}}"

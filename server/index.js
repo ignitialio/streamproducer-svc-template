@@ -31,7 +31,7 @@ class StreamProducer extends Service {
 
   // destroys output stream
   // ***************************************************************************
-  destroy(args) {
+  destroy() {
     /* @_DELETE_ */
     return new Promise((resolve, reject) => {
       try {
@@ -49,7 +49,7 @@ class StreamProducer extends Service {
     if (this._stream) {
       this._removeStream(this._streamName)
     }
-    
+
     super.destroy()
   }
 }

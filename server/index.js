@@ -19,10 +19,14 @@ class StreamProducer extends Service {
     /* @_PUT_ */
     return new Promise((resolve, reject) => {
       try {
-        // that's an output stream
-        this._streamName = 'stream:' + this._name + ':output'
-        this._stream = this._addStream(name)
-        resolve(this._streamName)
+        if (!this._stream) {
+          // that's an output stream
+          this._streamName = 'stream:' + this._name + ':output'
+          this._stream = this._addStream(name)
+          resolve(this._streamName)
+        } else {
+          reject(new Error('stream already exist'))
+        }
       } catch (err) {
         reject(err)
       }
@@ -35,13 +39,27 @@ class StreamProducer extends Service {
     /* @_DELETE_ */
     return new Promise((resolve, reject) => {
       try {
-        this._removeStream(this._streamName)
-        this._streamName = undefined
-        this._stream = undefined
-        resolve(name)
+        if (this._stream) {
+          this._removeStream(this._streamName)
+          this._streamName = undefined
+          this._stream = undefined
+          resolve(name)
+        } else {
+          reject(new Error('no stream instance'))
+        }
       } catch (err) {
         reject(err)
       }
+    })
+  }
+
+  // list of output streams (as a streaming service): here only one, since 
+  // single stream producer
+  // ***************************************************************************
+  streams() {
+    /* @_GET_ */
+    return new Promise((resolve, reject) => {
+      resolve([ this._streamName ])
     })
   }
 

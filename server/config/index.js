@@ -117,6 +117,8 @@ module.exports = {
   publicOptions: {
     /* declares component injection */
     uiComponentInjection: true,
+    /* is stream producer or stream transofrmer */
+    streaming: true,
     /* service description */
     description: {
       /* service icon */
